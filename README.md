@@ -57,4 +57,4 @@ Deployment to a cloud platform
 Thanks to Sai Balaji Sir, my trainer and mentor, and to Innomatics Research Labs and Full Stack Experts Academy for their guidance and support.
 
 👩‍💻 Author
-valiveti karthik GitHub: @valivetikarthik
+valiveti karthik GitHub: @vkarthik2943
