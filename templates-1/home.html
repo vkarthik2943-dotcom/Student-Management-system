@@ -1,0 +1,216 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>student management system</h1>
+    <a href="/students/add" style="align-items: center;">add student</a>      <br> <br>
+    <div >
+        {% for std in std %}
+        <div >
+            <img src="{{std[6]}}" alt="" width="300px" height="100px">
+            <h2 >name: {{std[1]}} </h2>
+            <p >age:{{std[2]}}</p>
+            <p>Gender:{{std[3]}}</p>
+            <p>marks:{{std[4]}}</p>
+            <p>course:{{std[5]}}</p>
+            <p>status:{{std[7]}}</p>
+            <div style="display: flex; justify-content: space-around;"  >
+                <a href="/students/{{ std[0] }}">
+                    <button>view</button>
+                </a>
+
+                <form action="/students/edit/{{std[0]}}">
+                    <button>update</button>
+                </form>
+
+                <form action="/std/delete/{{std[0]}}" method="post">
+                    <button class="delete-btn" type="submit"     onclick="return confirm('Are you sure you want to delete?')">delete</button>
+                </form>
+            </>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #1334f3;
+            --surface: rgba(255, 255, 255, 0.05);
+            --surface-hover: rgba(255, 255, 255, 0.08);
+            --border: rgba(255, 255, 255, 0.10);
+            --text: #eef0ff;
+            --muted: #9aa0c3;
+            --accent: #7c5cff;
+            --accent-2: #00d4ff;
+            --danger: #ef4444;
+            --radius: 18px;
+            --shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.7);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(900px 500px at 10% -10%, rgba(124, 92, 255, 0.25), transparent 60%),
+                radial-gradient(800px 500px at 100% 0%, rgba(0, 212, 255, 0.18), transparent 60%),
+                var(--bg);
+            background-attachment: fixed;
+            min-height: 100vh;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a { color: inherit; text-decoration: none; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 48px 24px 80px; }
+
+        /* Header */
+        .topbar {
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 16px; margin-bottom: 40px;
+        }
+        .title {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 800; letter-spacing: -0.03em;
+            background: linear-gradient(90deg, #fff, var(--accent-2) 60%, var(--accent));
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+        }
+        .subtitle { color: var(--muted); font-size: 0.95rem; margin-top: 4px; }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 11px 20px; border-radius: 12px; border: 1px solid var(--border);
+            background: var(--surface); color: var(--text);
+            font: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+            transition: transform .2s ease, background .2s ease, box-shadow .2s ease, border-color .2s ease;
+        }
+        .btn:hover { transform: translateY(-2px); background: var(--surface-hover); }
+        .btn-primary {
+            border: none; color: #fff;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            box-shadow: 0 10px 30px -10px rgba(124, 92, 255, 0.8);
+        }
+        .btn-primary:hover {
+            box-shadow: 0 14px 36px -8px rgba(0, 212, 255, 0.6);
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        }
+        .btn-danger:hover { background: rgba(239, 68, 68, 0.18); border-color: var(--danger); color: #ffb4b4; }
+        .btn-sm { padding: 8px 14px; font-size: 0.82rem; }
+
+        /* Grid and cards */
+        .grid {
+            display: grid; gap: 24px;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+        }
+        .card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); overflow: hidden;
+            backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+            box-shadow: var(--shadow);
+            transition: transform .3s ease, border-color .3s ease;
+        }
+        .card:hover { transform: translateY(-6px); border-color: rgba(124, 92, 255, 0.5); }
+
+        .card-img { position: relative; height: 450px; background: linear-gradient(135deg, #1b1f3a, #2a1f4d); }
+        .card-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .card-img::after {
+            content: ""; position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(11, 13, 23, 0.85), transparent 60%);
+        }
+        .card-img .badge { position: absolute; top: 12px; right: 12px; z-index: 2; }
+
+        .card-body { padding: 20px; }
+        .card-name { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 12px; }
+
+        .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+        .meta div { background: rgba(255, 255, 255, 0.04); border-radius: 10px; padding: 8px 12px; }
+        .meta span { display: block; font-size: 0.68rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+        .meta strong { font-size: 0.95rem; font-weight: 600; }
+
+        .actions { display: flex; gap: 8px; }
+        .actions form { flex: 1; display: flex; }
+        .actions a { flex: 1; }
+        .actions .btn { width: 100%; }
+
+        /* Badges */
+        .badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 5px 12px; border-radius: 999px; font-size: 0.75rem; font-weight: 600;
+            backdrop-filter: blur(8px);
+        }
+        .badge::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+        .badge-present { color: #4ade80; background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.4); }
+        .badge-absent  { color: #f87171; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="topbar">
+            <div>
+                <h1 class="title">Student Management System</h1>
+                <p class="subtitle">Browse, update and manage every student record</p>
+            </div>
+            <a href="/students/add" class="btn btn-primary">+ Add Student</a>
+        </div>
+
+        <div class="grid">
+            {% for std in std %}
+            <div class="card">
+                <div class="card-img">
+                    <img src="{{ std[6] }}" alt="{{ std[1] }}">
+                    {% if std[7] %}
+                    <span class="badge badge-present">Present</span>
+                    {% else %}
+                    <span class="badge badge-absent">Absent</span>
+                    {% endif %}
+                </div>
+
+                <div class="card-body">
+                    <h2 class="card-name">{{ std[1] }}</h2>
+
+                    <div class="meta">
+                        <div><span>Age</span><strong>{{ std[2] }}</strong></div>
+                        <div><span>Gender</span><strong>{{ std[3] }}</strong></div>
+                        <div><span>Marks</span><strong>{{ std[4] }}</strong></div>
+                        <div><span>Course</span><strong>{{ std[5] }}</strong></div>
+                    </div>
+
+                    <div class="actions">
+                        <a href="/students/{{ std[0] }}">
+                            <button class="btn btn-sm" type="button">View</button>
+                        </a>
+
+                        <form action="/students/edit/{{ std[0] }}">
+                            <button class="btn btn-sm">Update</button>
+                        </form>
+
+                        <form action="/std/delete/{{ std[0] }}" method="post">
+                            <button class="btn btn-sm btn-danger delete-btn" type="submit"
+                                    onclick="return confirm('Are you sure you want to delete?')">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
